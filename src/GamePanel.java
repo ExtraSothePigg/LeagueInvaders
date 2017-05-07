@@ -5,7 +5,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -18,7 +21,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	Font titleFont;
 	RocketShip rocket;
 	ObjectManager manager = new ObjectManager();
-	
+	public static BufferedImage alienImg;
+	public static BufferedImage rocketImg;
+	public static BufferedImage bulletImg;
+	int bulletCount = 20;
+
 	void startGame(){
 		timer.start();
 	}
@@ -28,6 +35,15 @@ void updateMenuState(){
 	void updateGameState(){
 		manager.update();
 		manager.manageEnemies();
+		manager.checkCollision();
+		if(rocket.isAlive == false){
+			currentState = END_STATE;
+			manager.reset();
+			rocket = new RocketShip(rocket.x,rocket.y,rocket.width,rocket.height);
+			manager.addObject(rocket);
+			bulletCount = 20;
+		}
+		manager.getScore();
 	}
 	void updateEndState(){
 		
@@ -43,7 +59,11 @@ void updateMenuState(){
 	void drawGameState(Graphics g){
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, 500, 800);
+		g.setColor(Color.WHITE);
+		g.setFont(titleFont);
+		g.drawString(""+bulletCount, 400, 700);
 		manager.draw(g);
+		
 		
 	}
 	void drawEndState(Graphics g){
@@ -67,10 +87,18 @@ void updateMenuState(){
 	
 	
 	public GamePanel(){
-		timer = new Timer(100/60,this);
+		timer = new Timer(1000/60,this);
 		titleFont = new Font("Arial",Font.PLAIN,48);
 		rocket = new RocketShip(250,700,50,50);
 		manager.addObject(rocket);
+		try {
+			alienImg = ImageIO.read(this.getClass().getResourceAsStream("alien.png"));
+			rocketImg = ImageIO.read(this.getClass().getResourceAsStream("rocket.png"));
+			bulletImg = ImageIO.read(this.getClass().getResourceAsStream("bullet.png"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -87,7 +115,6 @@ void updateMenuState(){
 
 	@Override
 	public void keyTyped(KeyEvent e) {
-		System.out.println("type");
 		
 	}
 
@@ -100,19 +127,37 @@ void updateMenuState(){
 			currentState = MENU_STATE;
 		}
 		if(e.getKeyCode()==KeyEvent.VK_LEFT){
-			rocket.x += -5;
+			rocket.left = true;
 		}
 		if(e.getKeyCode()==KeyEvent.VK_RIGHT){
-			rocket.x += 5;
+			rocket.right = true;
 		}
-		if(e.getKeyCode()==KeyEvent.VK_SPACE){
+		if(e.getKeyCode()==KeyEvent.VK_SPACE&&bulletCount > 0){
 			manager.addObject(new Projectile(rocket.x + 20, rocket.y, 10, 10));
+			bulletCount -= 1;
+			System.out.println(bulletCount);
+		}
+		if(e.getKeyCode()==KeyEvent.VK_A){
+			rocket.a = true;
+		}
+		if(e.getKeyCode()==KeyEvent.VK_D){
+			rocket.d = true;
 		}
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		System.out.println("release");
+		if(e.getKeyCode()==KeyEvent.VK_LEFT){
+			rocket.left = false;
+		}if(e.getKeyCode()==KeyEvent.VK_RIGHT){
+			rocket.right = false;
+		}
+		if(e.getKeyCode()==KeyEvent.VK_A){
+			rocket.a = false;
+		}
+		if(e.getKeyCode()==KeyEvent.VK_D){
+			rocket.d = false;
+		}
 		
 	}
 	

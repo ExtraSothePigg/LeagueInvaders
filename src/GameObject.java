@@ -7,15 +7,16 @@ public class GameObject {
 	int width;
 	int height;
 	boolean isAlive;
-	Rectangle rect;
+	Rectangle collisionBox;
 	public GameObject(){
 		isAlive = true;
+		collisionBox = new Rectangle(x,y,width,height);
 	}
 	void draw(Graphics g){
 		
 	}
 	void update(){
-		
+		collisionBox.setBounds(x,y,width,height);
 	}
 	
 }
