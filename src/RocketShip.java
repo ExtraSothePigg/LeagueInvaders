@@ -18,7 +18,7 @@ public RocketShip(int x, int y, int w, int h){
 	fast = 7;
 }
 void update(){
-	super.update();
+	
 	if(left){
 		x -= speed;
 	}if(right){
@@ -28,9 +28,10 @@ void update(){
 	}if(d){
 		x += fast;
 	}
+	collisionBox.setBounds(x,y,4,4);
 }
 void draw(Graphics g){
 	
-	g.drawImage(GamePanel.rocketImg, x, y, width, height, null);
+	g.drawImage(GamePanel.rocketImg, x, y, 4, 4, null);
 }
 }

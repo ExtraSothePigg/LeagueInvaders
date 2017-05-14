@@ -6,7 +6,7 @@ public class Projectile extends GameObject{
 	int y;
 	int width;
 	int height;
-	int speed = 1;
+	int speed = 5;
 public Projectile(int x, int y, int width, int height){
 	super();
 this.x = x;

@@ -24,7 +24,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener{
 	public static BufferedImage alienImg;
 	public static BufferedImage rocketImg;
 	public static BufferedImage bulletImg;
-	int bulletCount = 20;
+	float bulletCount = 20;
 
 	void startGame(){
 		timer.start();
@@ -43,6 +43,8 @@ void updateMenuState(){
 			manager.addObject(rocket);
 			bulletCount = 20;
 		}
+		
+
 		manager.getScore();
 	}
 	void updateEndState(){
@@ -61,7 +63,7 @@ void updateMenuState(){
 		g.fillRect(0, 0, 500, 800);
 		g.setColor(Color.WHITE);
 		g.setFont(titleFont);
-		g.drawString(""+bulletCount, 400, 700);
+		g.drawString(""+bulletCount, 408, 700);
 		manager.draw(g);
 		
 		
@@ -110,6 +112,9 @@ void updateMenuState(){
 		}else if(currentState == END_STATE){
 			updateEndState();
 		}
+		if(bulletCount<=25){
+			bulletCount += 0.006;
+		}
 		
 	}
 
@@ -133,7 +138,7 @@ void updateMenuState(){
 			rocket.right = true;
 		}
 		if(e.getKeyCode()==KeyEvent.VK_SPACE&&bulletCount > 0){
-			manager.addObject(new Projectile(rocket.x + 20, rocket.y, 10, 10));
+			manager.addObject(new Projectile(rocket.x, rocket.y, 10, 10));
 			bulletCount -= 1;
 			System.out.println(bulletCount);
 		}
